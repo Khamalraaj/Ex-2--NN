@@ -1,8 +1,10 @@
-<H3>Name</H3>
-<H3>Register no.</H3>
-<H3>Date</H3>
-<H3>Experiment No. 2 </H3>
+### Name : Khamalraaj S
+### Register no : 212224230122
+### Date : 23.02.2026
+### Experiment No. 2 
+
 ## Implementation of Perceptron for Binary Classification
+
 # AIM:
 To implement a perceptron for classification using Python<BR>
 
@@ -47,13 +49,95 @@ STEP 9:For ‘N ‘ iterations ,do the following:<BR>
          
         W (i+i)= W(i) + learning_rate*(y(i)-t(i))*x(i)<BR>
 STEP 10:Plot the error for each iteration <BR>
+
 STEP 11:Print the accuracy<BR>
 # PROGRAM:
-    ''' Insert your code here '''
+```py
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from mpl_toolkits import mplot3d
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+class Perceptron:
+    def __init__(self, learning_rate=0.1):
+        self.learning_rate = learning_rate
+        self.weights = None
+        self.bias = 0
+        self.errors = []
+
+    def sigmoid(self, z):
+        return 1 / (1 + np.exp(-z))
+
+    def fit(self, X, y, epochs=10):
+        n_samples, n_features = X.shape
+        self.weights = np.zeros(n_features)
+        self.bias = 0
+
+    for _ in range(epochs):
+        errors = 0
+        for xi, yi in zip(X, y):
+            linear_output = np.dot(xi, self.weights) + self.bias
+            y_pred = self.sigmoid(linear_output)
+            y_pred_class = 1 if y_pred >= 0.5 else -1
+
+            update = self.learning_rate * (yi - y_pred_class)
+            self.weights += update * xi
+            self.bias += update
+
+            errors += int(update != 0)
+
+            self.errors.append(errors)
+
+    def predict(self, X):
+        linear_output = np.dot(X, self.weights) + self.bias
+        y_pred = self.sigmoid(linear_output)
+        return np.where(y_pred >= 0.5, 1, -1)
+
+df = pd.read_excel('/content/Iris.xlsx')
+
+
+X = df.iloc[0:100, 0:2].values
+y = df.iloc[0:100, 4].values
+
+y = np.where(y == 'Iris-setsa', 1, -1)
+
+X = X.astype(float)
+
+X[:, 0] = (X[:, 0] - X[:, 0].mean()) / X[:, 0].std()
+X[:, 1] = (X[:, 1] - X[:, 1].mean()) / X[:, 1].std()
+
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=0)
+
+
+model = Perceptron(learning_rate=0.01)
+model.fit(X_train, y_train)
+
+plt.plot(range(1, len(model.errors) + 1),model.errors, marker='o')
+
+plt.xlabel("Epoch")
+plt.ylabel("Errors")
+plt.title("Training Errors per Epoch")
+plt.show()
+
+accuracy = accuracy_score(y_test, model.predict(X_test)) * 100
+print("Accuracy:", accuracy, "%")
+```
+
 
 # OUTPUT:
+<img width="349" height="46" alt="image" src="https://github.com/user-attachments/assets/0b1ceb76-f137-42b6-9139-fa2a01814916" />
 
-    ''' Show your result '''
+
+<img width="831" height="643" alt="image" src="https://github.com/user-attachments/assets/54c5d9d1-6c33-4611-98a8-00944c99dc84" />
+
+
+<img width="683" height="703" alt="image" src="https://github.com/user-attachments/assets/4d022e8c-fda6-46f7-9d37-ff8191d70f22" />
+
+
+<img width="786" height="613" alt="image" src="https://github.com/user-attachments/assets/ebf79c38-7d82-4783-a5e3-69390cda66a3" />
 
 # RESULT:
  Thus, a single layer perceptron model is implemented using python to classify Iris data set.
